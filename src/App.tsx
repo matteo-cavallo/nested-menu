@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NestedMenu, { NestedMenuState } from "./component/NestedMenu";
 
 const initialData: NestedMenuState = [
@@ -19,6 +19,10 @@ const initialData: NestedMenuState = [
 
 function App() {
   const [state, setState] = useState(initialData);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
 
   return <NestedMenu state={state} onChangeState={setState} />;
 }

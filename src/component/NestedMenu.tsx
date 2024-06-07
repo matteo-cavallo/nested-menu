@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 export interface NestedMenuItem {
   name: string;
   children: NestedMenuItem[];
@@ -18,6 +20,9 @@ const NestedMenu = ({
   onChangeState,
   maxDepth = 3,
 }: NestedMenuProps) => {
+  const [editingItem, setEditingItem] = useState<Path | null>(null);
+  const [newItemName, setNewItemName] = useState("");
+
   /**
    *
    * @param index The path to the item to add a new child
@@ -51,6 +56,47 @@ const NestedMenu = ({
     onChangeState(updateState(state, path));
   };
 
+  /**
+   * Handles the change of the name for an item at the given path.
+   *
+   * @param path The path to the item to be updated
+   * @param newName The new name to be set
+   */
+  const handleNameChange = (path: Path, newName: string) => {
+    /**
+     * Recursively updates the state by traversing the children and updating the name of the item.
+     */
+    const updateState = (
+      state: NestedMenuState,
+      path: Path
+    ): NestedMenuState => {
+      const [currentIndex, ...otherIndexes] = path;
+      return state.map((item, i) => {
+        if (i === currentIndex) {
+          return otherIndexes.length > 0
+            ? // If there are other indexes, we keep traversing the children
+              { ...item, children: updateState(item.children, otherIndexes) }
+            : // Otherwise, we update the name of the item
+              { ...item, name: newName };
+        }
+        return item;
+      });
+    };
+
+    // Call the outer function to update the state
+    onChangeState(updateState(state, path));
+  };
+
+  const handleSubmit = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    itemPath: Path
+  ) => {
+    if (e.key === "Enter") {
+      handleNameChange(itemPath, newItemName);
+      setEditingItem(null);
+    }
+  };
+
   const renderNestedMenu = (items: NestedMenuItem[], path: Path = []) => {
     return (
       <ul>
@@ -58,7 +104,26 @@ const NestedMenu = ({
           const itemPath = [...path, i];
           return (
             <li key={i}>
-              <span>{item.name}</span>
+              {editingItem && areSamePath(editingItem, itemPath) ? (
+                <input
+                  value={newItemName}
+                  onChange={(e) => {
+                    setNewItemName(e.target.value);
+                  }}
+                  onKeyDown={(e) => handleSubmit(e, itemPath)}
+                  onBlur={() => setEditingItem(null)}
+                  autoFocus
+                />
+              ) : (
+                <span
+                  onClick={() => {
+                    setEditingItem(itemPath);
+                    setNewItemName(item.name);
+                  }}
+                >
+                  {item.name}
+                </span>
+              )}
               {path.length < maxDepth - 1 && (
                 <button onClick={() => addItem(itemPath)}>Add Child</button>
               )}
@@ -77,6 +142,11 @@ const NestedMenu = ({
       {renderNestedMenu(state)}
     </div>
   );
+};
+
+const areSamePath = (path1: Path, path2: Path) => {
+  if (path1.length !== path2.length) return false;
+  return path1.every((index, i) => index === path2[i]);
 };
 
 export default NestedMenu;
