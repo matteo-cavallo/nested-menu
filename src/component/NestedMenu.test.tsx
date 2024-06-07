@@ -53,4 +53,14 @@ describe("NestedMenu", () => {
 
     unmount();
   });
+
+  it("should not add a new child if the depth is greater than the max depth", () => {
+    const { getAllByText, unmount } = render(<NestedMenuComponent />);
+    fireEvent.click(getAllByText("Add Child")[0]);
+    fireEvent.click(getAllByText("Add Child")[1]);
+
+    expect(getAllByText("Add Child").length).toBe(4);
+
+    unmount();
+  });
 });
