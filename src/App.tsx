@@ -1,6 +1,7 @@
-import NestedMenu from "./component/NestedMenu";
+import { useState } from "react";
+import NestedMenu, { NestedMenuState } from "./component/NestedMenu";
 
-const initialData = [
+const initialData: NestedMenuState = [
   {
     name: "Item 1",
     children: [
@@ -17,7 +18,9 @@ const initialData = [
 ];
 
 function App() {
-  return <NestedMenu state={initialData} />;
+  const [state, setState] = useState(initialData);
+
+  return <NestedMenu state={state} onChangeState={setState} />;
 }
 
 export default App;
