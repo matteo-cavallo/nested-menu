@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import "./NestedMenu.css";
+
 export interface NestedMenuItem {
   name: string;
   children: NestedMenuItem[];
@@ -104,29 +106,31 @@ const NestedMenu = ({
           const itemPath = [...path, i];
           return (
             <li key={i}>
-              {editingItem && areSamePath(editingItem, itemPath) ? (
-                <input
-                  value={newItemName}
-                  onChange={(e) => {
-                    setNewItemName(e.target.value);
-                  }}
-                  onKeyDown={(e) => handleSubmit(e, itemPath)}
-                  onBlur={() => setEditingItem(null)}
-                  autoFocus
-                />
-              ) : (
-                <span
-                  onClick={() => {
-                    setEditingItem(itemPath);
-                    setNewItemName(item.name);
-                  }}
-                >
-                  {item.name}
-                </span>
-              )}
-              {path.length < maxDepth - 1 && (
-                <button onClick={() => addItem(itemPath)}>Add Child</button>
-              )}
+              <div>
+                {editingItem && areSamePath(editingItem, itemPath) ? (
+                  <input
+                    value={newItemName}
+                    onChange={(e) => {
+                      setNewItemName(e.target.value);
+                    }}
+                    onKeyDown={(e) => handleSubmit(e, itemPath)}
+                    onBlur={() => setEditingItem(null)}
+                    autoFocus
+                  />
+                ) : (
+                  <span
+                    onClick={() => {
+                      setEditingItem(itemPath);
+                      setNewItemName(item.name);
+                    }}
+                  >
+                    {item.name}
+                  </span>
+                )}
+                {path.length < maxDepth - 1 && (
+                  <button onClick={() => addItem(itemPath)}>Add Child</button>
+                )}
+              </div>
               {item.children.length > 0 &&
                 renderNestedMenu(item.children, itemPath)}
             </li>
@@ -137,7 +141,7 @@ const NestedMenu = ({
   };
 
   return (
-    <div>
+    <div className="nested-menu">
       <button onClick={() => addItem()}>Add Item</button>
       {renderNestedMenu(state)}
     </div>

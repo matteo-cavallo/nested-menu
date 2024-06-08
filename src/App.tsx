@@ -24,7 +24,18 @@ function App() {
     console.log(state);
   }, [state]);
 
-  return <NestedMenu state={state} onChangeState={setState} />;
+  const resetState = () => {
+    setState(initialData);
+  };
+
+  return (
+    <div className="container">
+      <NestedMenu state={state} onChangeState={setState} />
+      <button className="reset-btn" onClick={resetState}>
+        Reset
+      </button>
+    </div>
+  );
 }
 
 export default App;

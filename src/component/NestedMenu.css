@@ -1,0 +1,26 @@
+.nested-menu ul {
+  list-style: none;
+}
+
+.nested-menu li div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px;
+  border-radius: 4px;
+}
+
+.nested-menu li div:hover {
+  background-color: hsla(221, 100%, 59%, 0.1);
+}
+
+.nested-menu button {
+  font-size: 14px;
+  outline: none;
+  border: none;
+  color: #3072ff;
+  background-color: hsla(221, 100%, 59%, 0.1);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
